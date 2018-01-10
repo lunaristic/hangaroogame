@@ -26,7 +26,7 @@ char answerBox(); // menampilkan box untuk jawaban
 // struct yang berisi nama pemain dan tahun lahir
 struct DataPlayer {
 	char name[20];
-	int born; // anggap tahun lahir
+	int born; // tahun lahir
 } DP; // seperti pointer, digunakan untuk memanggil struct
 
 void data() // berisi data player 
@@ -63,10 +63,15 @@ int main ()
 	getch(); // berfungsi untuk menekan segala yang ada di keyboard
 	system ("cls");
 	
-	// prosedur ke-2
+	// prosedur 
 	data(); // memanggil fungsi data()
 	
-	// prosedur ke-3
+	// cara bermain
+	cout << "\n Cara bermain : \n Pemain harus bisa menjawab dengan benar dari clue yang telah diberikan" << endl;
+	getch();
+	system("cls");
+	
+	// prosedur 
 	char retry;
 	
 	do
@@ -74,10 +79,10 @@ int main ()
 	alphabet();
 	mechanism();
 	
-	cout << "Ingin melanjutkan ? (Y/N)";
+	cout << "\n Ingin bermain lagi ? (Y/N)";
 	cin >> retry;
 	system("cls");
-	} while ( retry == 'y' || retry == 'Y');
+	} while ( retry == 'y' || retry == 'Y'); // akan berulang bila user menekan 'y' / 'Y'
 	
 }
 
@@ -217,39 +222,42 @@ char alphabet()
 
 char mechanism()
 {
-	int coba = 4;
+	int wrong = 0;
+	int coba = 4;	
+	
+	string jawab;
 	
 	string quest;
 	int randomLine = 0;
 	int noLine = 0;
 	
-	ifstream question;
-	question.open("question.txt");
-	srand( time(NULL) );
+	ifstream question; // operasi untuk mengoutput file ( read )
+	question.open("question.txt"); // membuka file bernama quesion.txt
+	srand( time(NULL) ); // merandom nilai 
 	randomLine = rand() % 10 + 1; // % 10 = 0,1,2,3,4,5,6,7,8,9. untuk pembacaan baris di .txt dimulai dari angka 1
-	while( getline( question, quest)) 
+	while( getline( question, quest)) // membaca tiap line ( baris )
 	{
     	++noLine;
-   		if( noLine == randomLine ) 
+   		if( noLine == randomLine ) // baris yang dikeluarkan adalah hasil dari acakan
 		{
         	cout << " Clue : " << quest << endl;
     	}
 	}
 	cout << endl;
-	question.close();
+	question.close(); // menutup file 
 	
 	int answerLine = 0;
 	string answer;
 	string save;
-	ifstream correctAnswer;
+	ifstream correctAnswer; 
 	correctAnswer.open("correctAnswer.txt");
-	while ( getline( correctAnswer, answer ))
+	while ( getline( correctAnswer, answer )) 
 	{
 		++answerLine;
 		if ( answerLine == randomLine )
 		{
 			save = answer;
-			for ( int k = 1; k <= answer.length(); k++ )
+			for ( int k = 1; k <= answer.length(); k++ ) 
 			{
 				cout << " _ " ;
 			}
@@ -258,23 +266,37 @@ char mechanism()
 	cout << endl;
 	correctAnswer.close();
 	
-	cout << endl;
-	string jawab;
-	cin >> jawab;
-	ofstream playerAnswer;
-	playerAnswer.open("PlayerAnswer.txt");
-	playerAnswer << jawab;
-	playerAnswer.close();
-	cout << endl;
+	do 
+	{
+		int wrong = 0; 
+		
+		cout << endl;
+		cout << " Percobaan tersisa : " << coba << endl;
+		cout << endl;
+		cout << " Masukkan jawaban : ";
 	
-	if ( jawab == save )
-	{
-		cout << "Kau benar" << endl;
-	}
-	else
-	{
-		cout << "Kau salah" << endl;
-		--coba;
-	}
-	cout << coba << endl;
+		cin >> jawab;
+		ofstream playerAnswer; // operasi menulis file ( write )
+		playerAnswer.open("PlayerAnswer.txt", ios::app ); // ios::app digunakan untuk menambahkan inputan ke file ( menyimpan )
+		playerAnswer << jawab; // menuliskan inputan user ke file
+		playerAnswer.close(); // menutup file
+		cout << endl;
+	
+		if ( jawab == save ) // jika inputan user sama dengan yang ada di file, maka :
+		{
+			cout << " ******** Kau benar *******" << endl;
+		}
+		else
+		{
+			coba--;
+			cout << " ******** Kau salah ********" << endl;
+		}
+		if ( coba == wrong ) // jika telah salah sebanyak ketentuan, maka :
+		{
+			system("cls");
+			cout << " \n Kau Kalah \n" << endl;
+			return 0; 
+		}
+	} while ( jawab != save ); // akan berulang bila inputan user ( jawab ) tidak sama dengan jawaban yang benar 
+	
 }
