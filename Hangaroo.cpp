@@ -11,7 +11,7 @@ using namespace std;
 void gotoxy( int x, int y ); // pengaturan koordinat
 void layout ( string s, int y ); // pengaturan tata letak
 void title(); // tulisan hangaroo
-char mechanism(); // menampilkan pertanyaan
+char mechanism(); // menampilkan pertanyaan, banyak huruf dalam jawaban, dan menginput jawaban
 
 // struct yang berisi nama pemain dan tahun lahir
 struct DataPlayer {
